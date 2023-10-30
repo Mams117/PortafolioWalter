@@ -19,6 +19,10 @@ const estudiosSchema = Schema(
       type: String,
       required: true,
     },
+    usuario: {
+      type: Schema.ObjectId,
+      ref: "personales",
+    },
   },
   { collection: "estudios" }
 );

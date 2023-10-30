@@ -15,6 +15,10 @@ const proyectosSchema = Schema(
       type: String,
       required: true,
     },
+    usuario: {
+      type: Schema.ObjectId,
+      ref: "personales",
+    },
   },
   { collection: "proyectos" }
 );

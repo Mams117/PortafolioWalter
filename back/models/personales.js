@@ -31,6 +31,7 @@ const personalesSchema = Schema(
       type: String,
       require: true,
     },
+    
   },
   { collection: "personales" }
 );

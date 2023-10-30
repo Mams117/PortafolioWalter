@@ -1,4 +1,4 @@
-let estudios = require("../models/estudios");
+let estudios = require("../models/personales");
 let bcrypt = require("bcrypy");
 let jasonWebToken = require("jsonwebtoken");
 
