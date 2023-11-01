@@ -1,5 +1,5 @@
-let estudios = require("../models/personales");
-let bcrypt = require("bcrypy");
+let usuario = require("../models/personales");
+let bcrypt = require("bcrypt");
 let jasonWebToken = require("jsonwebtoken");
 
 //Funciones
@@ -11,16 +11,17 @@ const registrar = async (req, res) => {
     //crea el objeto
 
     const usuarioNuevo = new usuario(datos);
-
     //validacion para que no se repitan los usuarios
-    let consultaUsuarios = await Perfil.find({
-      $or: [
-        {
-          email: usuarioNuevo.email.toLowerCase(),
-          telefono: usuarioNuevo.telefono.toLowerCase(),
-        },
-      ],
-    }).exec();
+    let consultaUsuarios = await usuario
+      .find({
+        $or: [
+          {
+            email: usuarioNuevo.email.toLowerCase(),
+            telefono: usuarioNuevo.telefono.toLowerCase(),
+          },
+        ],
+      })
+      .exec();
     // encriptar y salvar
     if (consultaUsuarios.length >= 1) {
       return res.status(400).json({
@@ -75,16 +76,16 @@ const login = async (req, res) => {
 
   //generamos el token  --- sencillo
 
-  const token = jwt.sign(
-    {
-      userId: consulta._id,
-      email: consulta.email,
-    },
-    "tokenGenerado",
-    {
-      expiresIn: "1d",
-    }
-  );
+  // const token = jwt.sign(
+  //   {
+  //     userId: consulta._id,
+  //     email: consulta.email,
+  //   },
+  //   "tokenGenerado",
+  //   {
+  //     expiresIn: "1d",
+  //   }
+  // );
 
   //resultado final del método
   return res.status(200).send({
@@ -93,8 +94,84 @@ const login = async (req, res) => {
     user: {
       id: consulta._id,
       email: consulta.email,
-      token: token,
+      // token: token,
     },
   });
 };
-module.exports = { registrar, login };
+const listar = async (req, res) => {
+  try {
+    let limite = req.params.limite;
+    let consulta = await Perfil.find({}).sort({ _id: -1 }).limit(limite).exec();
+    return res.status(200).send({
+      longitud_resultado: consulta.length,
+      resultado: consulta,
+    });
+  } catch (error) {
+    return res.status(404).send({
+      nombreError: error.name,
+      Mensaje: "Error en la consulta : " + error.message,
+    });
+  }
+};
+const editar = async (req, res) => {
+  try {
+    let id = req.params.id;
+    let data = req.body;
+
+    let consulta = await Perfil.findOneAndUpdate({ _id: id }, data).exec();
+    return res.status(200).send({
+      resultado: "success",
+      consulta,
+    });
+  } catch (error) {
+    return res.status(404).send({
+      nombreError: error.name,
+      Mensaje: "Error en la actualizacion : " + error.message,
+    });
+  }
+};
+const borrarUno = async (req, res) => {
+  try {
+    //obtener el id
+    let id = req.params.id;
+    consulta = await Perfil.findOneAndDelete(id).exec();
+    return res.status(200).send({
+      resultado: "success",
+    });
+  } catch (error) {
+    return res.status(404).send({
+      nombreError: error.name,
+      Mensaje: "Error en la consulta : " + error.message,
+    });
+  }
+};
+const upload = async (req, res) => {
+  try {
+    // id de perfil
+    let id = req.params.id;
+    //cargar nombre del archivo
+    let imagen = req.file.originalname;
+    //sacar extension de archivo
+    const imagenExtension = imagen.split(".");
+    const extension = imagenExtension[1];
+    if (extension != "png" && extension != "jpeg" && extension != "jpg") {
+    } else {
+      await Perfil.findOneAndUpdate(
+        { id: id },
+        { foto: req.file.filename },
+        { new: true }
+      );
+      return res.status(200).send({
+        status: "exitoso",
+        mensaje: "subida de imagenes exitosa",
+        files: req.file,
+      });
+    }
+  } catch (error) {
+    return res.status(404).send({
+      nombreError: error.name,
+      Mensaje: "Error  : " + error.message,
+    });
+  }
+};
+module.exports = { registrar, login, listar, editar, borrarUno, upload };

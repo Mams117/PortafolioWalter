@@ -1,28 +1,15 @@
-let estudios = require("../models/proyectos");
+let Publicacion = require("../models/proyectos");
 
 const crearProyectos = async (req, res) => {
-  let data = {
-    tipo: req.body.tipo,
-    detalle: req.body.detalle,
-    fechaFin: req.body.fechaFin,
-    notas: req.body.notas,
-  };
   const params = req.body;
-  if (!params.texto) {
-    return res.status(404).send({
-      status: "error",
-      mensaje: "no hay datos en la peticion !",
-    });
-  }
   // instanciamos el objeto
   try {
     let proyectosNuevo = new Publicacion(params);
-    proyectosNuevo.Publicacion = req.user.userId;
-    proyectosNuevo.Publicacion = req.body.tipo;
-    proyectosNuevo.Publicacion = req.body.detalle;
-    proyectosNuevo.Publicacion = req.body.fechaFin;
-    proyectosNuevo.Publicacion = req.body.notas;
-    proyectosNuevo = data;
+
+    // proyectosNuevo.Publicacion = req.body.nombre;
+    // proyectosNuevo.Publicacion = req.body.detalle;
+    // proyectosNuevo.Publicacion = req.body.link;
+    // proyectosNuevo = data;
     proyectosNuevo.save();
     return res.status(200).send({
       status: "ok",
@@ -60,13 +47,12 @@ const eliminarProyectos = async (req, res) => {
 
   try {
     let consulta = await Publicacion.findOneAndDelete({
-      usuario: req.user.userId,
       _id: idPublicacion,
     }).exec();
 
     return res.status(200).send({
       status: "ok",
-      mensaje: "estudio eliminado Correctamente !",
+      mensaje: "proyecto eliminado Correctamente !",
       consulta,
     });
   } catch (error) {

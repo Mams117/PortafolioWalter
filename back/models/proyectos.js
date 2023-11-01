@@ -20,7 +20,7 @@ const proyectosSchema = Schema(
       ref: "personales",
     },
   },
-  { collection: "proyectos" }
+  { collection: "proyecto" }
 );
 proyectosSchema.plugin(mongoosePaginate);
 module.exports = model("proyectos", proyectosSchema, "proyectos");

@@ -1,9 +1,14 @@
 let estudios = require("../models/estudios");
-let estudios1 = require("../models/personales");
 
 const crear = (req, res) => {
+  // let data = {
+  //   tipo: req.body.tipo,
+  //   detalle: req.body.detalle,
+  //   fechaFin: req.body.fechaFin,
+  //   notas: req.body.notas,
+  // };
   const params = req.body;
-  if (!params.texto) {
+  if (!params) {
     return res.status(404).send({
       status: "error",
       mensaje: "no hay datos en la peticion !",
@@ -11,12 +16,12 @@ const crear = (req, res) => {
   }
   // instanciamos el objeto
   try {
-    let estudiosNuevo = new Publicacion(params);
-    estudiosNuevo.Publicacion = req.user.userId;
-    estudiosNuevo.Publicacion = req.body.tipo;
-    estudiosNuevo.Publicacion = req.body.detalle;
-    estudiosNuevo.Publicacion = req.body.fechaFin;
-    estudiosNuevo.Publicacion = req.body.notas;
+    let estudiosNuevo = estudios(params);
+    // estudiosNuevo.Publicacion = req.user.userId;
+    // estudiosNuevo.Publicacion = req.body.tipo;
+    // estudiosNuevo.Publicacion = req.body.detalle;
+    // estudiosNuevo.Publicacion = req.body.fechaFin;
+    // estudiosNuevo.Publicacion = req.body.notas;
     estudiosNuevo.save();
     return res.status(200).send({
       status: "ok",
@@ -35,7 +40,7 @@ const detalleEstudios = async (req, res) => {
   let idPublicacion = req.params.id;
 
   try {
-    let consulta = await Publicacion.findById(idPublicacion).exec();
+    let consulta = await estudios.findById(idPublicacion).exec();
     return res.status(200).send({
       status: "ok",
       mensaje: "Estudio encontrado !",
@@ -49,14 +54,15 @@ const detalleEstudios = async (req, res) => {
     });
   }
 };
-const eliminarPublicacion = async (req, res) => {
+const eliminarEstudios = async (req, res) => {
   let idPublicacion = req.params.id;
 
   try {
-    let consulta = await Publicacion.findOneAndDelete({
-      usuario: req.user.userId,
-      _id: idPublicacion,
-    }).exec();
+    let consulta = await estudios
+      .findOneAndDelete({
+        _id: idPublicacion,
+      })
+      .exec();
 
     return res.status(200).send({
       status: "ok",
@@ -71,4 +77,4 @@ const eliminarPublicacion = async (req, res) => {
     });
   }
 };
-module.exports = { crear, detalleEstudios, eliminarPublicacion };
+module.exports = { crear, detalleEstudios, eliminarEstudios };

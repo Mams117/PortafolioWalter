@@ -13,7 +13,6 @@ const personalesSchema = Schema(
     },
     fechaNacimiento: {
       type: Date,
-      required: true,
     },
     direccion: {
       type: String,
@@ -31,7 +30,6 @@ const personalesSchema = Schema(
       type: String,
       require: true,
     },
-    
   },
   { collection: "personales" }
 );
