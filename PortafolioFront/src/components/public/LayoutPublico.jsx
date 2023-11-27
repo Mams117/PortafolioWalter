@@ -1,19 +1,12 @@
 import React from "react";
-import Header from "./Header";
-import Hero from "./Hero";
-import DatosPersona from "./DatosPersona";
 import { Outlet } from "react-router-dom";
-import AgregarEstudios from "./AgregarEstudios";
+import Logeo from "./Logeo";
 
 const LayoutPublico = () => {
   return (
     <>
       <div className="container-fluid">
-        <Header />
-        <Hero />
-        <DatosPersona />
-        <AgregarEstudios />
-
+        <Logeo/>
         <div className="row">
           <Outlet />
         </div>
