@@ -32,7 +32,7 @@ const registrar = async (req, res) => {
       let password = await bcrypt.hash(usuarioNuevo.password, 10);
       usuarioNuevo.password = password;
       usuarioNuevo.save();
-      return res.status(200).json({
+      return res.status(200).send({
         mensaje: "Insertado con exito",
       });
     }
@@ -56,7 +56,6 @@ const login = async (req, res) => {
   }
 
   // buscar en la bd el usuario  y validar
-
   let consulta = await Perfil.findOne({ email: data.email }).exec();
   if (consulta == null) {
     return res.status(400).send({
@@ -76,16 +75,16 @@ const login = async (req, res) => {
 
   //generamos el token  --- sencillo
 
-  // const token = jwt.sign(
-  //   {
-  //     userId: consulta._id,
-  //     email: consulta.email,
-  //   },
-  //   "tokenGenerado",
-  //   {
-  //     expiresIn: "1d",
-  //   }
-  // );
+  const token = jwt.sign(
+    {
+      userId: consulta._id,
+      email: consulta.email,
+    },
+    "tokenGenerado",
+    {
+      expiresIn: "1d",
+    }
+  );
 
   //resultado final del método
   return res.status(200).send({
@@ -94,7 +93,7 @@ const login = async (req, res) => {
     user: {
       id: consulta._id,
       email: consulta.email,
-      // token: token,
+      token: token,
     },
   });
 };
